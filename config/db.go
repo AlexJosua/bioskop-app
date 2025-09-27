@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,7 +12,11 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-    dsn := "host=localhost user=postgres password=baphomet123 dbname=bioskopdb port=5432 sslmode=disable"
+    dsn := os.Getenv("DATABASE_URL") // ambil dari Railway
+    if dsn == "" {
+        log.Fatal("DATABASE_URL tidak ditemukan")
+    }
+
     database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
     if err != nil {
         log.Fatal("Gagal koneksi ke database:", err)
