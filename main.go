@@ -4,7 +4,6 @@ import (
 	"bioskop-app/config"
 	"bioskop-app/handlers"
 	"bioskop-app/models"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +11,9 @@ import (
 func main() {
 	// koneksi database
 	config.ConnectDatabase()
-	models.MigrateDB(config.DB) // migrate tabel otomatis
+
+	// migrate tabel otomatis (jika belum ada di database)
+	models.MigrateDB(config.DB)
 
 	r := gin.Default()
 
@@ -23,11 +24,6 @@ func main() {
 	r.PUT("/bioskop/:id", handlers.UpdateBioskop)
 	r.DELETE("/bioskop/:id", handlers.DeleteBioskop)
 
-	// Railway kasih port lewat env
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080" // default kalau lokal
-	}
-
-	r.Run(":" + port)
+	// jalankan server di port 8080
+	r.Run(":8080")
 }
